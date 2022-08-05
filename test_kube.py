@@ -28,9 +28,6 @@ k = KubernetesPodOperator(
     labels={"foo": "bar"},
     annotations={"testKey": "testValue1"},
     task_id="dry_run_demo",
+    dag=dag,
     do_xcom_push=True,
 )
-
-start = DummyOperator(task_id="start", dag=dag)
-
-start >> k
