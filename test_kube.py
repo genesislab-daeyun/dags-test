@@ -4,6 +4,8 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
     KubernetesPodOperator,
 )
 
+DEFAULT_DATE = datetime(2016, 1, 1)
+
 args = {
     'owner': 'airflow',
     'start_date': DEFAULT_DATE,
