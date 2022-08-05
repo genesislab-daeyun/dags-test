@@ -2,9 +2,8 @@ from datetime import datetime
 
 from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
-    KubernetesPodOperator,
-)
+from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
+from utils.kubernetes import Tolerations, Affinity
 
 DEFAULT_DATE = datetime(2016, 1, 1)
 
@@ -29,5 +28,25 @@ k = KubernetesPodOperator(
     annotations={"testkey": "testval"},
     task_id="dry_run_demo",
     dag=dag,
-    do_xcom_push=True,
+    affinity=Affinity.test_affinity,
 )
+
+class Affinity():
+    def __init__(self):
+        pass
+
+    test_affinity = {
+        'nodeAffinity': {
+            'requiredDuringSchedulingIgnoredDuringExecution': {
+                'nodeSelectorTerms': [{
+                    'matchExpressions': [{
+                        'key': 'testKey',
+                        'operator': 'In',
+                        'values': [
+                            'testValue1'
+                        ]
+                    }]
+                }]
+            }
+        }
+    }
