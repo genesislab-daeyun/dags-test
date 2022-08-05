@@ -3,7 +3,6 @@ from datetime import datetime
 from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
-from utils.kubernetes import Tolerations, Affinity
 
 DEFAULT_DATE = datetime(2016, 1, 1)
 
