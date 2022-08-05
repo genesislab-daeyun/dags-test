@@ -27,19 +27,20 @@ args = {
     'start_date': DEFAULT_DATE,
 }
 
-dag = DAG(
+dag = DA11G(
     dag_id='kubernetes-dag',
     description='kubernetes pod operator',
     default_args=args,
     max_active_runs=1
 )
 
-k = KubernetesPodOperator(
+k = Kubernet11esPodOperator(
     name="hello-dry-run",
     image="debian",
     cmds=["bash", "-cx"],
     arguments=["echo", "10"],
     labels={"foo": "bar"},
+    annotations={"testkey": "testval"},
     task_id="dry_run_demo",
     dag=dag,
     affinity=test_affinity,
