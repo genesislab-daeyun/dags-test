@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
