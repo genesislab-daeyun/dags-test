@@ -1,6 +1,15 @@
 from airflow.models import DAG
+from airflow.operators.dummy_operator import DummyOperator
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
     KubernetesPodOperator,
+)
+
+dag = DAG(
+    dag_id='kubernetes-dag',
+    description='kubernetes pod operator',
+    default_args={},
+    schedule_interval='5 16 * * *',
+    max_active_runs=1
 )
 
 k = KubernetesPodOperator(
@@ -14,4 +23,6 @@ k = KubernetesPodOperator(
     do_xcom_push=True,
 )
 
-k.dry_run()
+start = DummyOperator(task_id="start", dag=dag)
+
+start >> k
