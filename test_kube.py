@@ -40,7 +40,6 @@ k = KubernetesPodOperator(
     cmds=["bash", "-cx"],
     arguments=["echo", "10"],
     labels={"foo": "bar"},
-    annotations={"testkey": "testval"},
     task_id="dry_run_demo",
     dag=dag,
     affinity=test_affinity,
