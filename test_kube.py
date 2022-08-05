@@ -4,11 +4,15 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
     KubernetesPodOperator,
 )
 
+args = {
+    'owner': 'airflow',
+    'start_date': DEFAULT_DATE,
+}
+
 dag = DAG(
     dag_id='kubernetes-dag',
     description='kubernetes pod operator',
-    default_args={},
-    schedule_interval='5 16 * * *',
+    default_args=args,
     max_active_runs=1
 )
 
