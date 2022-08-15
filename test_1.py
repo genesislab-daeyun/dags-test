@@ -66,7 +66,7 @@ default_args = {
 executor_config={
     "pod_override": k8s.V1Pod(
         spec=k8s.V1PodSpec(
-            affinity = k8s.V1Affinity(
+            affinity=k8s.V1Affinity(
                 node_affinity=k8s.V1NodeAffinity(
                     preferred_during_scheduling_ignored_during_execution=[
                         k8s.V1PreferredSchedulingTerm(
