@@ -63,9 +63,22 @@ default_args = {
 }
 # [END default_args]
 
-executor_config = {
-    "KubernetesExecutor": {"labels": {"node.genesislab.ai/gpu-node": "true"}}
-}
+affinity = k8s.V1Affinity(
+    pod_affinity=k8s.V1PodAffinity(
+        required_during_scheduling_ignored_during_execution=[
+            k8s.V1WeightedPodAffinityTerm(
+                weight=1,
+                pod_affinity_term=k8s.V1PodAffinityTerm(
+                    label_selector=k8s.V1LabelSelector(
+                        match_expressions=[
+                            k8s.V1LabelSelectorRequirement(key="node.genesislab.ai/gpu-node", operator="In", values="true")
+                        ]
+                    ),
+                ),
+            )
+        ]
+    ),
+)
 
 # [START instantiate_dag]
 dag = DAG(
@@ -84,7 +97,7 @@ t1 = BashOperator(
     task_id='print_date',
     bash_command='date',
     dag=dag,
-    executor_config=executor_config,
+    affinity=affinity,
 )
 
 t2 = BashOperator(
@@ -93,7 +106,7 @@ t2 = BashOperator(
     bash_command='sleep 5',
     retries=3,
     dag=dag,
-    executor_config=executor_config,
+    affinity=affinity,
 )
 # [END basic_task]
 
@@ -124,7 +137,7 @@ t3 = BashOperator(
     bash_command=templated_command,
     params={'my_param': 'Parameter I passed in'},
     dag=dag,
-    executor_config=executor_config,
+    affinity=affinity,
 )
 
 # [END jinja_template]
