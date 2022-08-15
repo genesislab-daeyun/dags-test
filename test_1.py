@@ -29,6 +29,7 @@ from datetime import timedelta
 from airflow import DAG
 
 # Operators; we need this to operate!
+from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.operators.bash import BashOperator
 from airflow.utils.dates import days_ago
 
@@ -89,23 +90,42 @@ dag = DAG(
 )
 # [END instantiate_dag]
 
-# t1, t2 and t3 are examples of tasks created by instantiating operators
-# [START basic_task]
-t1 = BashOperator(
+# # t1, t2 and t3 are examples of tasks created by instantiating operators
+# # [START basic_task]
+# t1 = BashOperator(
+#     task_id='print_date',
+#     bash_command='date',
+#     dag=dag,
+#     affinity=affinity,
+# )
+
+t1 = KubernetesPodOperator(
     task_id='print_date',
-    bash_command='date',
+    image='debian',
+    cmds=["bash", "-cx"],
+    arguments=['date'],
     dag=dag,
     affinity=affinity,
 )
 
-t2 = BashOperator(
+t2 = KubernetesPodOperator(
     task_id='sleep',
-    depends_on_past=False,
-    bash_command='sleep 5',
+    image='debian',
+    cmds=["bash", "-cx"],
+    arguments=['sleep', '5'],
     retries=3,
     dag=dag,
     affinity=affinity,
 )
+
+# t2 = BashOperator(
+#     task_id='sleep',
+#     depends_on_past=False,
+#     bash_command='sleep 5',
+#     retries=3,
+#     dag=dag,
+#     affinity=affinity,
+# )
 # [END basic_task]
 
 # [START documentation]
@@ -129,16 +149,16 @@ templated_command = """
 {% endfor %}
 """
 
-t3 = BashOperator(
-    task_id='templated',
-    depends_on_past=False,
-    bash_command=templated_command,
-    params={'my_param': 'Parameter I passed in'},
-    dag=dag,
-    affinity=affinity,
-)
+# t3 = BashOperator(
+#     task_id='templated',
+#     depends_on_past=False,
+#     bash_command=templated_command,
+#     params={'my_param': 'Parameter I passed in'},
+#     dag=dag,
+#     affinity=affinity,
+# )
 
 # [END jinja_template]
 
-t1 >> [t2, t3]
+t1 >> [t2]
 # [END tutorial]
