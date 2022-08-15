@@ -187,17 +187,17 @@ templated_command = """
 {% endfor %}
 """
 
-# t3 = BashOperator(
-#     task_id='templated',
-#     depends_on_past=False,
-#     bash_command=templated_command,
-#     params={'my_param': 'Parameter I passed in'},
-#     dag=dag,
-#     affinity=affinity,
-# )
+t3 = BashOperator(
+    task_id='templated',
+    depends_on_past=False,
+    bash_command=templated_command,
+    params={'my_param': 'Parameter I passed in'},
+    dag=dag,
+    executor_config=executor_config,
+)
 
 # [END jinja_template]
 
-t1 >> [t2]
+t1 >> [t2, t3]
 # kubernetes_min_pod
 # [END tutorial]
