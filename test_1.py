@@ -150,6 +150,6 @@ t3 = BashOperator(
 
 # [END jinja_template]
 
-t1 >> [t2, t3 >> t1]
+t1 >> [t2, t3]
 # kubernetes_min_pod
 # [END tutorial]
