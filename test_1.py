@@ -64,16 +64,14 @@ default_args = {
 # [END default_args]
 
 affinity = k8s.V1Affinity(
-    pod_affinity=k8s.V1PodAffinity(
-        required_during_scheduling_ignored_during_execution=[
-            k8s.V1WeightedPodAffinityTerm(
+    node_affinity=k8s.V1NodeAffinity(
+        preferred_during_scheduling_ignored_during_execution=[
+            k8s.V1PreferredSchedulingTerm(
                 weight=1,
-                pod_affinity_term=k8s.V1PodAffinityTerm(
-                    label_selector=k8s.V1LabelSelector(
-                        match_expressions=[
-                            k8s.V1LabelSelectorRequirement(key="node.genesislab.ai/gpu-node", operator="In", values="true")
-                        ]
-                    ),
+                preference=k8s.V1NodeSelectorTerm(
+                    match_expressions=[
+                        k8s.V1NodeSelectorRequirement(key="node.genesislab.ai/gpu-node", operator="In", values=["true"])
+                    ]
                 ),
             )
         ]
