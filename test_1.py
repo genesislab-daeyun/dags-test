@@ -77,7 +77,7 @@ executor_config={
                             weight=1,
                             preference=k8s.V1NodeSelectorTerm(
                                 match_expressions=[
-                                    k8s.V1NodeSelectorRequirement(key="node.genesislab.ai/gpu-node", operator="In", values=["true"])
+                                    k8s.V1NodeSelectorRequirement(key="node.genesislab.ai/gpu-node", operator="In", values=["false"])
                                 ]
                             ),
                         )
