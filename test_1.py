@@ -32,6 +32,8 @@ from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.utils.dates import days_ago
 
+from kubernetes.client import models as k8s
+
 # [END import_module]
 
 # [START default_args]
