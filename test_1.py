@@ -100,6 +100,7 @@ dag = DAG(
 # )
 
 t1 = KubernetesPodOperator(
+    name='print_date',
     task_id='print_date',
     image='debian',
     cmds=["bash", "-cx"],
@@ -109,6 +110,7 @@ t1 = KubernetesPodOperator(
 )
 
 t2 = KubernetesPodOperator(
+    name='sleep',
     task_id='sleep',
     image='debian',
     cmds=["bash", "-cx"],
