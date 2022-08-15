@@ -61,6 +61,10 @@ default_args = {
 }
 # [END default_args]
 
+executor_config = {
+    "pod_override": k8s.V1Pod(metadata=k8s.V1ObjectMeta(labels={"node.genesislab.ai/gpu-node": "true"}))
+}
+
 # [START instantiate_dag]
 dag = DAG(
     'tutorial',
@@ -78,6 +82,7 @@ t1 = BashOperator(
     task_id='print_date',
     bash_command='date',
     dag=dag,
+    executor_config=executor_config,
 )
 
 t2 = BashOperator(
@@ -86,6 +91,7 @@ t2 = BashOperator(
     bash_command='sleep 5',
     retries=3,
     dag=dag,
+    executor_config=executor_config,
 )
 # [END basic_task]
 
@@ -116,7 +122,9 @@ t3 = BashOperator(
     bash_command=templated_command,
     params={'my_param': 'Parameter I passed in'},
     dag=dag,
+    executor_config=executor_config,
 )
+
 # [END jinja_template]
 
 t1 >> [t2, t3]
