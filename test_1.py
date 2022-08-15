@@ -106,6 +106,7 @@ t1 = KubernetesPodOperator(
     cmds=["date"],
     dag=dag,
     affinity=affinity,
+    get_logs=True,
 )
 
 t2 = KubernetesPodOperator(
@@ -116,6 +117,7 @@ t2 = KubernetesPodOperator(
     retries=3,
     dag=dag,
     affinity=affinity,
+    get_logs=True,
 )
 
 # t2 = BashOperator(
