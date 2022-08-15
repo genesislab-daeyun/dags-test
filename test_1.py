@@ -63,21 +63,26 @@ default_args = {
     # 'trigger_rule': 'all_success'
 }
 # [END default_args]
-
-affinity = k8s.V1Affinity(
-    node_affinity=k8s.V1NodeAffinity(
-        preferred_during_scheduling_ignored_during_execution=[
-            k8s.V1PreferredSchedulingTerm(
-                weight=1,
-                preference=k8s.V1NodeSelectorTerm(
-                    match_expressions=[
-                        k8s.V1NodeSelectorRequirement(key="node.genesislab.ai/gpu-node", operator="In", values=["true"])
+executor_config={
+    "pod_override": k8s.V1Pod(
+        spec=k8s.V1PodSpec(
+            affinity = k8s.V1Affinity(
+                node_affinity=k8s.V1NodeAffinity(
+                    preferred_during_scheduling_ignored_during_execution=[
+                        k8s.V1PreferredSchedulingTerm(
+                            weight=1,
+                            preference=k8s.V1NodeSelectorTerm(
+                                match_expressions=[
+                                    k8s.V1NodeSelectorRequirement(key="node.genesislab.ai/gpu-node", operator="In", values=["true"])
+                                ]
+                            ),
+                        )
                     ]
                 ),
             )
-        ]
-    ),
-)
+        )
+    )
+}
 
 # [START instantiate_dag]
 dag = DAG(
@@ -90,14 +95,14 @@ dag = DAG(
 )
 # [END instantiate_dag]
 
-# # t1, t2 and t3 are examples of tasks created by instantiating operators
-# # [START basic_task]
-# t1 = BashOperator(
-#     task_id='print_date',
-#     bash_command='date',
-#     dag=dag,
-#     affinity=affinity,
-# )
+# t1, t2 and t3 are examples of tasks created by instantiating operators
+# [START basic_task]
+t1 = BashOperator(
+    task_id='print_date',
+    bash_command='date',
+    dag=dag,
+    executor_config=executor_config,
+)
 
 # t1 = KubernetesPodOperator(
 #     name='print_date',
@@ -109,31 +114,31 @@ dag = DAG(
 #     get_logs=True,
 # )
 
-kubernetes_min_pod = KubernetesPodOperator(
-    # The ID specified for the task.
-    task_id='pod-ex-minimum',
-    # Name of task you want to run, used to generate Pod ID.
-    name='pod-ex-minimum',
-    # Entrypoint of the container, if not specified the Docker container's
-    # entrypoint is used. The cmds parameter is templated.
-    cmds=['echo'],
-    # The namespace to run within Kubernetes, default namespace is
-    # `default`. There is the potential for the resource starvation of
-    # Airflow workers and scheduler within the Cloud Composer environment,
-    # the recommended solution is to increase the amount of nodes in order
-    # to satisfy the computing requirements. Alternatively, launching pods
-    # into a custom namespace will stop fighting over resources.
-    namespace='default',
-    # Docker image specified. Defaults to hub.docker.com, but any fully
-    # qualified URLs will point to a custom repository. Supports private
-    # gcr.io images if the Composer Environment is under the same
-    # project-id as the gcr.io images and the service account that Composer
-    # uses has permission to access the Google Container Registry
-    # (the default service account has permission)
-    image='gcr.io/gcp-runtimes/ubuntu_18_0_4',
-    dag=dag,
-    affinity=affinity,
-)
+# kubernetes_min_pod = KubernetesPodOperator(
+#     # The ID specified for the task.
+#     task_id='pod-ex-minimum',
+#     # Name of task you want to run, used to generate Pod ID.
+#     name='pod-ex-minimum',
+#     # Entrypoint of the container, if not specified the Docker container's
+#     # entrypoint is used. The cmds parameter is templated.
+#     cmds=['echo'],
+#     # The namespace to run within Kubernetes, default namespace is
+#     # `default`. There is the potential for the resource starvation of
+#     # Airflow workers and scheduler within the Cloud Composer environment,
+#     # the recommended solution is to increase the amount of nodes in order
+#     # to satisfy the computing requirements. Alternatively, launching pods
+#     # into a custom namespace will stop fighting over resources.
+#     namespace='default',
+#     # Docker image specified. Defaults to hub.docker.com, but any fully
+#     # qualified URLs will point to a custom repository. Supports private
+#     # gcr.io images if the Composer Environment is under the same
+#     # project-id as the gcr.io images and the service account that Composer
+#     # uses has permission to access the Google Container Registry
+#     # (the default service account has permission)
+#     image='gcr.io/gcp-runtimes/ubuntu_18_0_4',
+#     dag=dag,
+#     affinity=affinity,
+# )
 
 # t2 = KubernetesPodOperator(
 #     name='sleep',
@@ -146,14 +151,14 @@ kubernetes_min_pod = KubernetesPodOperator(
 #     get_logs=True,
 # )
 
-# t2 = BashOperator(
-#     task_id='sleep',
-#     depends_on_past=False,
-#     bash_command='sleep 5',
-#     retries=3,
-#     dag=dag,
-#     affinity=affinity,
-# )
+t2 = BashOperator(
+    task_id='sleep',
+    depends_on_past=False,
+    bash_command='sleep 5',
+    retries=3,
+    dag=dag,
+    executor_config=executor_config,
+)
 # [END basic_task]
 
 # [START documentation]
@@ -188,6 +193,6 @@ templated_command = """
 
 # [END jinja_template]
 
-# t1 >> [t2]
-kubernetes_min_pod
+t1 >> [t2]
+# kubernetes_min_pod
 # [END tutorial]
