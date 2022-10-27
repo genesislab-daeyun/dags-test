@@ -7,6 +7,7 @@ from airflow import DAG
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
 from airflow.kubernetes.volume import Volume
 from airflow.kubernetes.volume_mount import VolumeMount
+from kubernetes.client import models as k8s
 
 share_volume = Volume(
     name='share',
