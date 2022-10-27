@@ -28,7 +28,7 @@ with DAG(
     make_dataframe = KubernetesPodOperator(
         task_id='make_dataframe',
         image='110.45.155.232:8080/mlops-test/mlops-make_dataframe:latest',
-        image_pull_secrets=[k8s.V1LocalObjectReference('harbor')],
+        # image_pull_secrets=[k8s.V1LocalObjectReference('harbor')],
         name='make_dataframe',
         namespace='mlops',
         volumes=[share_volume],
