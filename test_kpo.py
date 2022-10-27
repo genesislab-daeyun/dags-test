@@ -28,12 +28,13 @@ with DAG(
     make_dataframe = KubernetesPodOperator(
         task_id='make_dataframe',
         image='110.45.155.232:8080/mlops-test/mlops-make_dataframe:latest',
+        image_pull_secrets=[k8s.V1LocalObjectReference('harbor')],
         name='make_dataframe',
         namespace='mlops',
         volumes=[share_volume],
         volume_mounts=[share_volume_mount],
         cmds=['python3.10'],
-        arguments=['--output_path', '/opt/tmp/stat.csv', '&> /opt/tmp/stat.csv'],
+        arguments=['/opt/tmp/test.py'],
         get_logs=True,
         do_xcom_push=False,
     )
@@ -47,10 +48,7 @@ with DAG(
         volumes=[share_volume],
         volume_mounts=[share_volume_mount],
         cmds=['python3.10'],
-        arguments=[
-            '--input_path', '/opt/tmp/stat.csv',
-            '--output_path', '/opt/tmp/result.csv'
-        ],
+        arguments=['/opt/tmp/test2.py'],
         get_logs=True,
         do_xcom_push=False,
     )
