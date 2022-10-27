@@ -33,7 +33,7 @@ with DAG(
         volumes=[share_volume],
         volume_mounts=[share_volume_mount],
         cmds=['python3.10'],
-        arguments=['--output_path', '/opt/tmp/stat.csv'],
+        arguments=['--output_path', '/opt/tmp/stat.csv', '&> /opt/tmp/stat.csv'],
         get_logs=True,
         do_xcom_push=False,
     )
