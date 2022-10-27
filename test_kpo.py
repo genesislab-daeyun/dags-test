@@ -41,7 +41,7 @@ with DAG(
     calculate_stat = KubernetesPodOperator(
         task_id='calculate_stat',
         image='110.45.155.232:8080/mlops-test/mlops-calculate_stat:latest',
-        image_pull_secrets=[k8s.V1LocalObjectReference("harbor")],
+        image_pull_secrets=[k8s.V1LocalObjectReference('harbor')],
         name='make_dataframe',
         namespace='mlops',
         volumes=[share_volume],
